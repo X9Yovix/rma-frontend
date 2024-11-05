@@ -1,0 +1,21 @@
+@use "theme.scss" as themes;
+@use "@angular/material" as mat;
+
+@include mat.core();
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+body {
+  @include mat.all-component-themes(themes.$dark-theme);
+  background-color: #333 !important;
+}
+
+body.theme-light {
+  @include mat.all-component-colors(themes.$light-theme);
+  background-color: #f4f4f4 !important;
+}

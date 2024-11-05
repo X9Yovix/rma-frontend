@@ -1,0 +1,76 @@
+<section class="section py-5 d-flex align-items-center min-vh-100">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <img
+          class="img-fluid mx-auto d-block mb-3"
+          ngSrc="assets/images/login/login"
+          ngSrcset="720w, 800w"
+          alt="Login"
+          width="400"
+          height="400"
+          priority
+        />
+        <button mat-icon-button (click)="switchTheme()">
+          <mat-icon>{{ isDarkMode() ? "wb_sunny" : "nights_stay" }}</mat-icon>
+        </button>
+      </div>
+    </div>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-12 w-100 text-center mb-4">
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input
+              matInput
+              formControlName="email"
+              placeholder="test@test.com"
+              (blur)="updateErrorMessage()"
+            />
+            <mat-icon matSuffix>email_outlined</mat-icon>
+            @if (email?.invalid){
+            <mat-error>{{ errorMessage.get("email") }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 w-100 text-center mb-3">
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input
+              matInput
+              formControlName="password"
+              [type]="isVisible ? 'text' : 'password'"
+              (blur)="updateErrorMessage()"
+            />
+            <mat-icon matSuffix (click)="toggleVisibility()">
+              {{
+                isVisible ? "visibility_off_outlined" : "visibility_outlined"
+              }}
+            </mat-icon>
+            @if (password?.invalid){
+            <mat-error>{{ errorMessage.get("password") }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 w-100 text-center">
+          <button mat-fab extended type="submit" [disabled]="isLoading">
+            @if (isLoading){
+            <mat-icon>
+              <mat-progress-spinner
+                mode="indeterminate"
+                diameter="24"
+              ></mat-progress-spinner>
+            </mat-icon>
+            }@else{
+            <mat-icon>login</mat-icon>
+            } Login
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>

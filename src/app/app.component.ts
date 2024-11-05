@@ -1,13 +1,20 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit } from "@angular/core";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { RouterOutlet } from "@angular/router";
+
+import { ThemingService } from "./shared/services/theme/theming.service";
 
 @Component({
-  selector: 'app-root',
+  selector: "app-root",
   standalone: true,
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  imports: [RouterOutlet, MatSnackBarModule],
+  templateUrl: "./app.component.html",
+  styleUrl: "./app.component.css",
 })
-export class AppComponent {
-  title = 'rma_frontend';
+export class AppComponent implements OnInit {
+  constructor(private themingService: ThemingService) {}
+
+  ngOnInit(): void {
+    this.themingService.loadTheme();
+  }
 }
