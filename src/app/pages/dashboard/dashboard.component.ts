@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  inject,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import {
   MatPaginator,
   MatPaginatorModule,
@@ -13,6 +19,8 @@ import { MatButtonModule } from "@angular/material/button";
 import { UtilsService } from "../../shared/utils/utils.service";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { ActivatedRoute, Router } from "@angular/router";
+import { MatDialog } from "@angular/material/dialog";
+import { DialogAnimationsComponent } from "../../shared/components/dialog-animations/dialog-animations.component";
 
 @Component({
   selector: "app-dashboard",
@@ -25,6 +33,7 @@ import { ActivatedRoute, Router } from "@angular/router";
     MatButtonModule,
     MatIcon,
     MatProgressBarModule,
+    MatButtonModule,
   ],
   templateUrl: "./dashboard.component.html",
   styleUrl: "./dashboard.component.css",
@@ -43,6 +52,9 @@ export class DashboardComponent implements AfterViewInit, OnInit {
   currentPage: number = 0;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  readonly dialog = inject(MatDialog);
+  elementName: string = "";
 
   constructor(
     private recipeService: RecipeService,
@@ -103,7 +115,38 @@ export class DashboardComponent implements AfterViewInit, OnInit {
     );
   }
 
+  openDialog(
+    enterAnimationDuration: string,
+    exitAnimationDuration: string,
+    element: RecipeInterface
+  ): void {
+    const dialogRef = this.dialog.open(DialogAnimationsComponent, {
+      width: "250px",
+      enterAnimationDuration,
+      exitAnimationDuration,
+      data: { name: element.name },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === "confirm") {
+        this.onDelete(element);
+      }
+    });
+  }
+
   onDelete(element: RecipeInterface) {
-    console.log("delete recipe: ", element);
+    this.recipeService.deleteRecipe(element._id).subscribe({
+      next: (response) => {
+        this.utils.openSnackBar(response.message, "success");
+        this.getRecipes(this.currentPage + 1);
+      },
+      error: (error) => {
+        console.error(error);
+        this.utils.openSnackBar(error.error.error, "error");
+      },
+      complete: () => {
+        this.isLoading = false;
+      },
+    });
   }
 }

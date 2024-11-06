@@ -26,4 +26,8 @@ export class RecipeService {
   updateRecipe(id: string, recipe: FormData): Observable<any> {
     return this.http.put(`${this.apiUrl}/${id}`, recipe);
   }
+
+  deleteRecipe(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 }
