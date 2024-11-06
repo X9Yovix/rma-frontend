@@ -158,7 +158,6 @@ export class AddComponent implements OnInit {
         },
         complete: () => {
           this.isLoading = false;
-          this.onClear();
           this.recipeForm.enable();
         },
       });
