@@ -4,6 +4,7 @@ import { noAuthGuard } from "./core/guards/no-auth/no-auth.guard";
 import { LoginComponent } from "./pages/login/login.component";
 import { DashboardComponent } from "./pages/dashboard/dashboard.component";
 import { AddComponent } from "./pages/dashboard/add/add.component";
+import { EditComponent } from "./pages/dashboard/edit/edit.component";
 
 export const routes: Routes = [
   {
@@ -21,10 +22,14 @@ export const routes: Routes = [
     component: DashboardComponent,
     canActivate: [authGuard],
   },
-
   {
     path: "dashboard/add",
     component: AddComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: "dashboard/edit/:id",
+    component: EditComponent,
     canActivate: [authGuard],
   },
 ];

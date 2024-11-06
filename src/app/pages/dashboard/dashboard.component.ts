@@ -12,7 +12,7 @@ import { MatIcon } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { UtilsService } from "../../shared/utils/utils.service";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "app-dashboard",
@@ -39,16 +39,22 @@ export class DashboardComponent implements AfterViewInit, OnInit {
   pageSizes = [5, 10, 100];
   totalRecipes = 0;
 
+  totalPages = 0;
+  currentPage: number = 0;
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private recipeService: RecipeService,
     private utils: UtilsService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    this.getRecipes();
+    const pageParam = this.route.snapshot.queryParamMap.get("page");
+    const page = pageParam ? parseInt(pageParam, 10) : 1;
+    this.getRecipes(page);
   }
 
   ngAfterViewInit() {
@@ -61,9 +67,16 @@ export class DashboardComponent implements AfterViewInit, OnInit {
       next: (response) => {
         this.recipesList = response.recipes;
         this.totalRecipes = response.totalRecipes;
+        this.totalPages = response.totalPages;
+        this.currentPage = response.currentPage - 1;
         this.dataSource = new MatTableDataSource<RecipeInterface>(
           this.recipesList
         );
+
+        if (this.paginator) {
+          this.paginator.pageIndex = this.currentPage;
+          this.paginator.length = this.totalRecipes;
+        }
       },
       error: (error) => {
         console.error(error);
@@ -81,10 +94,13 @@ export class DashboardComponent implements AfterViewInit, OnInit {
 
   onCreate() {
     this.router.navigateByUrl("/dashboard/add");
+    this.router.navigateByUrl(`/dashboard/add?page=${this.currentPage + 1}`);
   }
 
   onModify(element: RecipeInterface) {
-    console.log("modify recipe: ", element);
+    this.router.navigateByUrl(
+      `/dashboard/edit/${element._id}?page=${this.currentPage + 1}`
+    );
   }
 
   onDelete(element: RecipeInterface) {

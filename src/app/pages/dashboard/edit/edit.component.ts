@@ -15,9 +15,10 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { RecipeService } from "../../../core/services/recipe/recipe.service";
 import { UtilsService } from "../../../shared/utils/utils.service";
 import { MatCardModule } from "@angular/material/card";
+import { environment } from "../../../../environments/environment.development";
 
 @Component({
-  selector: "app-add",
+  selector: "app-edit",
   standalone: true,
   imports: [
     CommonModule,
@@ -29,10 +30,10 @@ import { MatCardModule } from "@angular/material/card";
     MatProgressSpinner,
     MatCardModule,
   ],
-  templateUrl: "./add.component.html",
-  styleUrl: "./add.component.css",
+  templateUrl: "./edit.component.html",
+  styleUrl: "./edit.component.css",
 })
-export class AddComponent implements OnInit {
+export class EditComponent implements OnInit {
   recipeForm!: FormGroup;
   isVisible: boolean = false;
   errorMessage: Map<string, string> = new Map();
@@ -41,6 +42,10 @@ export class AddComponent implements OnInit {
 
   imagePreviewUrl: string | null = null;
   imagePlaceholderUrl = "assets/images/add/thumbnail.png";
+
+  recipeId: string | null = null;
+  createdAt: string | null = null;
+  updatedAt: string | null = null;
 
   get name() {
     return this.recipeForm.get("name");
@@ -58,13 +63,14 @@ export class AddComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private recipeService: RecipeService,
+    private route: ActivatedRoute,
     private utils: UtilsService,
-    private router: Router,
-    private route: ActivatedRoute
+    private router: Router
   ) {}
 
   ngOnInit() {
     this.setupForm();
+    this.fetchRecipe();
   }
 
   setupForm() {
@@ -73,6 +79,33 @@ export class AddComponent implements OnInit {
       description: ["", Validators.required],
       ingredients: ["", Validators.required],
       instructions: ["", Validators.required],
+    });
+  }
+
+  fetchRecipe() {
+    this.isLoading = true;
+    this.recipeId = this.route.snapshot.paramMap.get("id") as string;
+    this.recipeService.getRecipe(this.recipeId).subscribe({
+      next: (response) => {
+        this.recipeForm.patchValue({
+          name: response.name,
+          description: response.description,
+          ingredients: response.ingredients.join(", "),
+          instructions: response.instructions,
+        });
+        if (response.image) {
+          this.imagePreviewUrl = environment.rmabackendUrl + response.image;
+        }
+        this.createdAt = response.createdAt;
+        this.updatedAt = response.updatedAt;
+      },
+      error: (error) => {
+        console.error(error);
+        this.utils.openSnackBar(error.error.error, "error");
+      },
+      complete: () => {
+        this.isLoading = false;
+      },
     });
   }
 
@@ -146,22 +179,24 @@ export class AddComponent implements OnInit {
         formData.append("image", this.image as File);
       }
 
-      this.recipeService.addRecipe(formData).subscribe({
-        next: (response) => {
-          this.utils.openSnackBar(response.message, "success");
-          this.goBackToDashboard();
-        },
-        error: (error) => {
-          this.utils.openSnackBar(error.error.error, "error");
-          this.isLoading = false;
-          this.recipeForm.enable();
-        },
-        complete: () => {
-          this.isLoading = false;
-          this.onClear();
-          this.recipeForm.enable();
-        },
-      });
+      if (this.recipeId) {
+        this.recipeService.updateRecipe(this.recipeId, formData).subscribe({
+          next: (response) => {
+            this.utils.openSnackBar(response.message, "success");
+            this.goBackToDashboard();
+          },
+          error: (error) => {
+            this.utils.openSnackBar(error.error.error, "error");
+            this.isLoading = false;
+            this.recipeForm.enable();
+          },
+          complete: () => {
+            this.isLoading = false;
+            this.onClear();
+            this.recipeForm.enable();
+          },
+        });
+      }
     } else {
       this.updateErrorMessage();
     }

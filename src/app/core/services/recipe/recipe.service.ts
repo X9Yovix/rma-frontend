@@ -18,4 +18,12 @@ export class RecipeService {
   addRecipe(recipe: FormData): Observable<any> {
     return this.http.post(this.apiUrl, recipe);
   }
+
+  getRecipe(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${id}`);
+  }
+
+  updateRecipe(id: string, recipe: FormData): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, recipe);
+  }
 }

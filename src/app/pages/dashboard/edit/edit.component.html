@@ -8,7 +8,21 @@
   <div class="container">
     <div class="row">
       <div class="col-12 text-center mb-4">
-        <h2 class="text-color">Create Recipe</h2>
+        <h2 class="text-color">Update Recipe</h2>
+        <mat-card appearance="outlined" class="notes-card w-50 mx-auto">
+          <mat-card-content class="text-color">
+            <div class="d-flex justify-content-between">
+              <span>
+                <strong>Created At:</strong>
+                {{ createdAt | date : "short" }}
+              </span>
+              <span>
+                <strong>Updated At:</strong>
+                {{ updatedAt | date : "short" }}
+              </span>
+            </div>
+          </mat-card-content>
+        </mat-card>
       </div>
     </div>
     <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
@@ -128,8 +142,8 @@
               ></mat-progress-spinner>
             </mat-icon>
             } @else{
-            <mat-icon>create</mat-icon>
-            } Create Recipe
+            <mat-icon>update</mat-icon>
+            } Update Recipe
           </button>
         </div>
       </div>
