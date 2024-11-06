@@ -13,7 +13,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { AuthService } from "../../core/services/auth/auth.service";
 import { UtilsService } from "../../shared/utils/utils.service";
-import { ThemingService } from "../../shared/services/theme/theming.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-login",
@@ -49,7 +49,7 @@ export class LoginComponent {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private utils: UtilsService,
-    private readonly themingService: ThemingService
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -95,15 +95,18 @@ export class LoginComponent {
         this.loginForm.disable();
         this.authService.login(this.loginForm.value).subscribe({
           next: (response) => {
-            console.log(response);
             this.utils.openSnackBar(response.message);
+            localStorage.setItem("accessToken", response.accessToken);
+            localStorage.setItem("refreshToken", response.refreshToken);
+            localStorage.setItem("user", JSON.stringify(response.user));
+            this.authService.updateIsLoggedInStatus(true);
+            this.router.navigateByUrl("/dashboard");
           },
           error: (error) => {
             console.error(error);
             this.utils.openSnackBar(error.error.error);
           },
         });
-        console.log(this.loginForm.value);
       } else {
         this.updateErrorMessage();
       }
@@ -113,13 +116,5 @@ export class LoginComponent {
       this.isLoading = false;
       this.loginForm.enable();
     }
-  }
-
-  switchTheme() {
-    this.themingService.toggleTheme(!this.themingService.isDarkMode);
-  }
-
-  isDarkMode() {
-    return this.themingService.isDarkMode;
   }
 }

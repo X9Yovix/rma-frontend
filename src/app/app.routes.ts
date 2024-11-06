@@ -1,4 +1,8 @@
 import { Routes } from "@angular/router";
+import { authGuard } from "./core/guards/auth/auth.guard";
+import { noAuthGuard } from "./core/guards/no-auth/no-auth.guard";
+import { LoginComponent } from "./pages/login/login.component";
+import { DashboardComponent } from "./pages/dashboard/dashboard.component";
 
 export const routes: Routes = [
   {
@@ -8,7 +12,12 @@ export const routes: Routes = [
   },
   {
     path: "login",
-    loadComponent: () =>
-      import("./pages/login/login.component").then((m) => m.LoginComponent),
+    component: LoginComponent,
+    canActivate: [noAuthGuard],
+  },
+  {
+    path: "dashboard",
+    component: DashboardComponent,
+    canActivate: [authGuard],
   },
 ];

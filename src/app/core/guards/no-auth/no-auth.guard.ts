@@ -3,20 +3,19 @@ import { AuthService } from "../../services/auth/auth.service";
 import { inject } from "@angular/core";
 import { catchError, map, of } from "rxjs";
 
-export const authGuard: CanActivateFn = (route, state) => {
+export const noAuthGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
   return authService.verifyToken().pipe(
     map((response) => {
-      console.log("authGuard response: ", response);
-      return true;
+      console.log("noAuthGuard response: ", response);
+      router.navigateByUrl("/dashboard");
+      return false;
     }),
     catchError((error) => {
-      console.error("authGuard error: ", error);
-      authService.logout();
-      router.navigateByUrl("/login");
-      return of(false);
+      console.error("noAuthGuard error: ", error);
+      return of(true);
     })
   );
 };

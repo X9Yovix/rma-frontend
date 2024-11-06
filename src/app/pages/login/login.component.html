@@ -1,4 +1,4 @@
-<section class="section py-5 d-flex align-items-center min-vh-100">
+<section class="section py-5 d-flex align-items-center">
   <div class="container">
     <div class="row">
       <div class="col-12">
@@ -11,9 +11,6 @@
           height="400"
           priority
         />
-        <button mat-icon-button (click)="switchTheme()">
-          <mat-icon>{{ isDarkMode() ? "wb_sunny" : "nights_stay" }}</mat-icon>
-        </button>
       </div>
     </div>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">

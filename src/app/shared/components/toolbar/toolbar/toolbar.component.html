@@ -1,0 +1,20 @@
+<mat-toolbar>
+  <mat-toolbar-row>
+    @if(isDarkMode()){
+    <span class="fs-6">Light</span>
+    <button mat-icon-button (click)="switchTheme()" class="ms-2">
+      <mat-icon>wb_sunny</mat-icon>
+    </button>
+    } @else {
+    <span class="fs-6">Dark</span>
+    <button mat-icon-button (click)="switchTheme()" class="ms-2">
+      <mat-icon>nights_stay</mat-icon>
+    </button>
+
+    } @if(isLoggedIn){
+    <button mat-button (click)="logout()" class="ms-auto">
+      Logout <mat-icon>logout</mat-icon>
+    </button>
+    }
+  </mat-toolbar-row>
+</mat-toolbar>
