@@ -10,7 +10,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
-import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { AuthService } from "../../core/services/auth/auth.service";
 import { UtilsService } from "../../shared/utils/utils.service";
 import { Router } from "@angular/router";
@@ -26,7 +26,7 @@ import { Router } from "@angular/router";
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatProgressSpinner,
+    MatProgressSpinnerModule,
   ],
   templateUrl: "./login.component.html",
   styleUrl: "./login.component.css",
@@ -88,33 +88,32 @@ export class LoginComponent {
   }
 
   onSubmit() {
-    try {
-      console.log(this.loginForm.value);
-      if (this.loginForm.valid) {
-        this.isLoading = true;
-        this.loginForm.disable();
-        this.authService.login(this.loginForm.value).subscribe({
-          next: (response) => {
-            this.utils.openSnackBar(response.message, "success");
-            localStorage.setItem("accessToken", response.accessToken);
-            localStorage.setItem("refreshToken", response.refreshToken);
-            localStorage.setItem("user", JSON.stringify(response.user));
-            this.authService.updateIsLoggedInStatus(true);
-            this.router.navigateByUrl("/dashboard");
-          },
-          error: (error) => {
-            console.error(error);
-            this.utils.openSnackBar(error.error.error, "error");
-          },
-        });
-      } else {
-        this.updateErrorMessage();
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      this.isLoading = false;
-      this.loginForm.enable();
+    if (this.loginForm.valid) {
+      this.isLoading = true;
+      this.loginForm.disable();
+
+      this.authService.login(this.loginForm.value).subscribe({
+        next: (response) => {
+          this.utils.openSnackBar(response.message, "success");
+          localStorage.setItem("accessToken", response.accessToken);
+          localStorage.setItem("refreshToken", response.refreshToken);
+          localStorage.setItem("user", JSON.stringify(response.user));
+          this.authService.updateIsLoggedInStatus(true);
+          this.router.navigateByUrl("/dashboard");
+        },
+        error: (error) => {
+          console.error(error);
+          this.utils.openSnackBar(error.error.error, "error");
+
+          this.isLoading = false;
+          this.loginForm.enable();
+        },
+        complete: () => {
+          this.isLoading = false;
+        },  
+      });
+    } else {
+      this.updateErrorMessage();
     }
   }
 }

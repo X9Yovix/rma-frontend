@@ -1,0 +1,132 @@
+<section class="section py-5 d-flex align-items-center">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center mb-4">
+        <h2 class="text-color">Create Recipe</h2>
+      </div>
+    </div>
+    <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-6 col-sm-12 text-center mb-4">
+          <mat-form-field appearance="outline">
+            <mat-label>Name</mat-label>
+            <input
+              matInput
+              formControlName="name"
+              placeholder="Recipe Name"
+              (blur)="updateErrorMessage()"
+            />
+            <mat-icon matSuffix>help_outlined</mat-icon>
+            @if (name?.invalid){
+            <mat-error>{{ errorMessage.get("name") }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+        <div class="col-md-6 col-sm-12 text-center mb-4">
+          <mat-form-field appearance="outline">
+            <mat-label>Description</mat-label>
+            <input
+              matInput
+              formControlName="description"
+              placeholder="Recipe description"
+              (blur)="updateErrorMessage()"
+            />
+            <mat-icon matSuffix>description_outlined</mat-icon>
+            @if (name?.invalid){
+            <mat-error>{{ errorMessage.get("description") }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 col-sm-12 text-center mb-4">
+          <mat-form-field appearance="outline">
+            <mat-label>Ingredients (comma separated)</mat-label>
+            <textarea
+              matInput
+              formControlName="ingredients"
+              placeholder="ingredient1, ingredient2, ingredient3"
+              (blur)="updateErrorMessage()"
+              cdkAutosizeMinRows="2"
+            ></textarea>
+            <mat-icon matSuffix>dinner_dining_outlined</mat-icon>
+            @if (name?.invalid){
+            <mat-error>{{ errorMessage.get("ingredients") }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+        <div class="col-md-6 col-sm-12 text-center mb-4">
+          <mat-form-field appearance="outline">
+            <mat-label>Instructions</mat-label>
+            <textarea
+              matInput
+              formControlName="instructions"
+              placeholder="Steps to prepare the recipe"
+              (blur)="updateErrorMessage()"
+              cdkAutosizeMinRows="2"
+            ></textarea>
+            <mat-icon matSuffix>menu_book_outlined</mat-icon>
+            @if (name?.invalid){
+            <mat-error>{{ errorMessage.get("instructions") }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 text-center mb-4 mx-auto">
+          <mat-card appearance="outlined" class="card-container">
+            <img
+              [src]="imagePreviewUrl || imagePlaceholderUrl"
+              alt="Selected Image"
+              class="image-preview"
+              width="200"
+              height="200"
+            />
+
+            <button
+              type="button"
+              mat-raised-button
+              (click)="fileInput.click()"
+              class="my-2 mx-2"
+            >
+              Choose file
+              <mat-icon>attach_file</mat-icon>
+            </button>
+            <input
+              hidden
+              #fileInput
+              type="file"
+              id="file"
+              (change)="onImageChange($event)"
+              accept="image/*"
+            />
+          </mat-card>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 w-100 text-center">
+          <button
+            mat-fab
+            extended
+            type="submit"
+            [disabled]="isLoading || !recipeForm.valid"
+          >
+            @if (isLoading){
+            <mat-icon>
+              <mat-progress-spinner
+                mode="indeterminate"
+                diameter="24"
+              ></mat-progress-spinner>
+            </mat-icon>
+            } @else{
+            <mat-icon>create</mat-icon>
+            } Create Recipe
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>

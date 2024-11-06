@@ -3,6 +3,7 @@ import { authGuard } from "./core/guards/auth/auth.guard";
 import { noAuthGuard } from "./core/guards/no-auth/no-auth.guard";
 import { LoginComponent } from "./pages/login/login.component";
 import { DashboardComponent } from "./pages/dashboard/dashboard.component";
+import { AddComponent } from "./pages/dashboard/add/add.component";
 
 export const routes: Routes = [
   {
@@ -18,6 +19,12 @@ export const routes: Routes = [
   {
     path: "dashboard",
     component: DashboardComponent,
+    canActivate: [authGuard],
+  },
+
+  {
+    path: "dashboard/add",
+    component: AddComponent,
     canActivate: [authGuard],
   },
 ];

@@ -4,6 +4,7 @@
   class="primary-progress-bar"
 ></mat-progress-bar>
 }
+
 <section class="section py-5 d-flex align-items-center">
   <div class="container">
     <div class="row mb-4">
@@ -20,7 +21,6 @@
     </div>
     <div class="row">
       <div class="col-12">
-        @if(!isLoading){
         <div class="table-responsive mat-elevation-z8">
           <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
             <ng-container matColumnDef="name">
@@ -67,7 +67,6 @@
             (page)="onPageChange($event)"
           ></mat-paginator>
         </div>
-        }
       </div>
     </div>
   </div>

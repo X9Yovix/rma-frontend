@@ -54,7 +54,12 @@
       </div>
       <div class="row">
         <div class="col-12 w-100 text-center">
-          <button mat-fab extended type="submit" [disabled]="isLoading">
+          <button
+            mat-fab
+            extended
+            type="submit"
+            [disabled]="isLoading || !loginForm.valid"
+          >
             @if (isLoading){
             <mat-icon>
               <mat-progress-spinner

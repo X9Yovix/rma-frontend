@@ -1,0 +1,15 @@
+.card-container {
+  max-width: 300px;
+  margin: auto;
+}
+
+.image-preview {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+mat-form-field {
+  width: 90%;
+}

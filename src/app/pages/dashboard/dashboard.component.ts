@@ -7,16 +7,18 @@ import {
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { RecipeInterface } from "../../core/interfaces/recipe/recipe-interface";
 import { RecipeService } from "../../core/services/recipe/recipe.service";
-import { DatePipe } from "@angular/common";
+import { CommonModule, DatePipe } from "@angular/common";
 import { MatIcon } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { UtilsService } from "../../shared/utils/utils.service";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-dashboard",
   standalone: true,
   imports: [
+    CommonModule,
     MatTableModule,
     MatPaginatorModule,
     DatePipe,
@@ -41,7 +43,8 @@ export class DashboardComponent implements AfterViewInit, OnInit {
 
   constructor(
     private recipeService: RecipeService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -53,26 +56,23 @@ export class DashboardComponent implements AfterViewInit, OnInit {
   }
 
   getRecipes(page: number = 1, pageSize: number = 5) {
-    try {
-      this.isLoading = true;
-      this.recipeService.getRecipes(page, pageSize).subscribe({
-        next: (response) => {
-          this.recipesList = response.recipes;
-          this.totalRecipes = response.totalRecipes;
-          this.dataSource = new MatTableDataSource<RecipeInterface>(
-            this.recipesList
-          );
-        },
-        error: (error) => {
-          console.error(error);
-          this.utils.openSnackBar(error.error.error, "error");
-        },
-      });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      this.isLoading = false;
-    }
+    this.isLoading = true;
+    this.recipeService.getRecipes(page, pageSize).subscribe({
+      next: (response) => {
+        this.recipesList = response.recipes;
+        this.totalRecipes = response.totalRecipes;
+        this.dataSource = new MatTableDataSource<RecipeInterface>(
+          this.recipesList
+        );
+      },
+      error: (error) => {
+        console.error(error);
+        this.utils.openSnackBar(error.error.error, "error");
+      },
+      complete: () => {
+        this.isLoading = false;
+      },
+    });
   }
 
   onPageChange(event: PageEvent) {
@@ -80,7 +80,7 @@ export class DashboardComponent implements AfterViewInit, OnInit {
   }
 
   onCreate() {
-    console.log("create recipe: ");
+    this.router.navigateByUrl("/dashboard/add");
   }
 
   onModify(element: RecipeInterface) {
