@@ -21,6 +21,9 @@ import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogAnimationsComponent } from "../../shared/components/dialog-animations/dialog-animations.component";
+import { MatFormFieldModule, MatLabel } from "@angular/material/form-field";
+import { FormsModule } from "@angular/forms";
+import { MatInputModule } from "@angular/material/input";
 
 @Component({
   selector: "app-dashboard",
@@ -34,6 +37,10 @@ import { DialogAnimationsComponent } from "../../shared/components/dialog-animat
     MatIcon,
     MatProgressBarModule,
     MatButtonModule,
+    MatLabel,
+    MatFormFieldModule,
+    FormsModule,
+    MatInputModule,
   ],
   templateUrl: "./dashboard.component.html",
   styleUrl: "./dashboard.component.css",
@@ -55,6 +62,9 @@ export class DashboardComponent implements AfterViewInit, OnInit {
 
   readonly dialog = inject(MatDialog);
   elementName: string = "";
+
+  searchName: string = "";
+  searchIngredients: string = "";
 
   constructor(
     private recipeService: RecipeService,
@@ -93,6 +103,7 @@ export class DashboardComponent implements AfterViewInit, OnInit {
       error: (error) => {
         console.error(error);
         this.utils.openSnackBar(error.error.error, "error");
+        this.isLoading = false;
       },
       complete: () => {
         this.isLoading = false;
@@ -101,7 +112,47 @@ export class DashboardComponent implements AfterViewInit, OnInit {
   }
 
   onPageChange(event: PageEvent) {
-    this.getRecipes(event.pageIndex + 1, event.pageSize);
+    if (this.searchName.trim() || this.searchIngredients.trim()) {
+      this.searchRecipes(event.pageIndex + 1, event.pageSize);
+    } else {
+      this.getRecipes(event.pageIndex + 1, event.pageSize);
+    }
+  }
+
+  searchRecipes(page: number = 1, pageSize: number = 5) {
+    this.isLoading = true;
+    const name = this.searchName.trim();
+    const ingredients = this.searchIngredients.trim();
+    this.recipeService
+      .searchRecipes(name, ingredients, page, pageSize)
+      .subscribe({
+        next: (response) => {
+          this.recipesList = response.recipes;
+          this.totalRecipes = response.totalRecipes;
+          this.totalPages = response.totalPages;
+          this.currentPage = response.currentPage - 1;
+          this.dataSource = new MatTableDataSource<RecipeInterface>(
+            this.recipesList
+          );
+
+          if (this.paginator) {
+            this.paginator.pageIndex = this.currentPage;
+            this.paginator.length = this.totalRecipes;
+          }
+        },
+        error: (error) => {
+          console.error(error);
+          this.utils.openSnackBar(error.error.error, "error");
+          this.isLoading = false;
+        },
+        complete: () => {
+          this.isLoading = false;
+        },
+      });
+  }
+
+  onSearchChange() {
+    this.searchRecipes(this.currentPage, 5);
   }
 
   onCreate() {
@@ -119,7 +170,7 @@ export class DashboardComponent implements AfterViewInit, OnInit {
     enterAnimationDuration: string,
     exitAnimationDuration: string,
     element: RecipeInterface
-  ): void {
+  ) {
     const dialogRef = this.dialog.open(DialogAnimationsComponent, {
       width: "250px",
       enterAnimationDuration,
@@ -143,6 +194,7 @@ export class DashboardComponent implements AfterViewInit, OnInit {
       error: (error) => {
         console.error(error);
         this.utils.openSnackBar(error.error.error, "error");
+        this.isLoading = false;
       },
       complete: () => {
         this.isLoading = false;

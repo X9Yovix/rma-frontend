@@ -8,12 +8,34 @@
 <section class="section py-5 d-flex align-items-center">
   <div class="container">
     <div class="row mb-4">
-      <div class="col-6 text-start">
+      <div class="col-md-12 text-start">
         <div>
           <h2 class="text-color">Recipes list</h2>
         </div>
       </div>
-      <div class="col-6 text-end">
+    </div>
+    <div class="row">
+      <div class="col-md-4 col-sm-12">
+        <mat-form-field [style.width.px]="350">
+          <mat-label>Search by name</mat-label>
+          <input
+            matInput
+            [(ngModel)]="searchName"
+            (ngModelChange)="onSearchChange()"
+          />
+        </mat-form-field>
+      </div>
+      <div class="col-md-4 col-sm-12">
+        <mat-form-field [style.width.px]="350">
+          <mat-label>Search by ingredients (comma-separated)</mat-label>
+          <input
+            matInput
+            [(ngModel)]="searchIngredients"
+            (ngModelChange)="onSearchChange()"
+          />
+        </mat-form-field>
+      </div>
+      <div class="col-md-4 col-sm-12 text-end mb-2">
         <button mat-raised-button class="primary-button" (click)="onCreate()">
           <mat-icon>add</mat-icon> Create
         </button>

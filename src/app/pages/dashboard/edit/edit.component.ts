@@ -102,6 +102,7 @@ export class EditComponent implements OnInit {
       error: (error) => {
         console.error(error);
         this.utils.openSnackBar(error.error.error, "error");
+        this.isLoading = false;
       },
       complete: () => {
         this.isLoading = false;
