@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  rmaApiUrl: "http://localhost:3000/api",
-  rmabackendUrl: "http://localhost:3000/",
+  rmaApiUrl: "https://rma-backend-2bgd.onrender.com/api",
+  rmabackendUrl: "https://rma-backend-2bgd.onrender.com/",
 };

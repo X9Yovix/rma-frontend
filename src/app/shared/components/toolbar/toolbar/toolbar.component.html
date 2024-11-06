@@ -11,13 +11,11 @@
       <mat-icon>nights_stay</mat-icon>
     </button>
 
-    }
-
+    } @if(isLoggedIn){
     <button mat-button routerLink="/dashboard" class="ms-5">
       <mat-icon>dashboard</mat-icon> Dashboard
     </button>
 
-    @if(isLoggedIn){
     <button mat-button (click)="logout()" class="ms-auto">
       Logout <mat-icon>logout</mat-icon>
     </button>
