@@ -6,6 +6,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { Subscription } from "rxjs";
 import { AuthService } from "../../../../core/services/auth/auth.service";
 import { Router } from "@angular/router";
+import { UtilsService } from "../../../utils/utils.service";
 
 @Component({
   selector: "app-toolbar",
@@ -21,7 +22,8 @@ export class ToolbarComponent implements OnInit {
   constructor(
     private readonly themingService: ThemingService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private utils: UtilsService
   ) {}
 
   ngOnInit() {
@@ -46,6 +48,7 @@ export class ToolbarComponent implements OnInit {
 
   logout() {
     this.authService.logout();
+    this.utils.openSnackBar("Logged out successfully");
     this.authService.updateIsLoggedInStatus(false);
     this.router.navigateByUrl("/login");
   }

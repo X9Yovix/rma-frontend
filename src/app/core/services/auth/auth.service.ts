@@ -19,7 +19,7 @@ export class AuthService {
     return !!localStorage.getItem("accessToken");
   }
 
-  updateIsLoggedInStatus(isLoggedIn: boolean): void {
+  updateIsLoggedInStatus(isLoggedIn: boolean) {
     this.loggedInSubject.next(isLoggedIn);
   }
 
@@ -34,7 +34,7 @@ export class AuthService {
     });
   }
 
-  logout(): void {
+  logout() {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");

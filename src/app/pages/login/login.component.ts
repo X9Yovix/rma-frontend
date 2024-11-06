@@ -95,7 +95,7 @@ export class LoginComponent {
         this.loginForm.disable();
         this.authService.login(this.loginForm.value).subscribe({
           next: (response) => {
-            this.utils.openSnackBar(response.message);
+            this.utils.openSnackBar(response.message, "success");
             localStorage.setItem("accessToken", response.accessToken);
             localStorage.setItem("refreshToken", response.refreshToken);
             localStorage.setItem("user", JSON.stringify(response.user));
@@ -104,7 +104,7 @@ export class LoginComponent {
           },
           error: (error) => {
             console.error(error);
-            this.utils.openSnackBar(error.error.error);
+            this.utils.openSnackBar(error.error.error, "error");
           },
         });
       } else {

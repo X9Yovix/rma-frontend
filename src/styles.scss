@@ -15,7 +15,103 @@ body {
   background-color: #333 !important;
 }
 
+// Typography
+.text-color {
+  color: var(--mat-app-text-color);
+}
+
+// Button
+.primary-button {
+  @include mat.button-color(themes.$dark-theme, $color-variant: primary);
+}
+.secondary-button {
+  @include mat.button-color(themes.$dark-theme, $color-variant: secondary);
+}
+.tertiary-button {
+  @include mat.button-color(themes.$dark-theme, $color-variant: tertiary);
+}
+.error-button {
+  @include mat.button-color(themes.$dark-theme, $color-variant: error);
+}
+
+// Progress bar
+.primary-progress-bar {
+  @include mat.progress-bar-color(themes.$dark-theme, $color-variant: primary);
+}
+.secondary-progress-bar {
+  @include mat.progress-bar-color(
+    themes.$dark-theme,
+    $color-variant: secondary
+  );
+}
+.tertiary-progress-bar {
+  @include mat.progress-bar-color(themes.$dark-theme, $color-variant: tertiary);
+}
+.error-progress-bar {
+  @include mat.progress-bar-color(themes.$dark-theme, $color-variant: error);
+}
+
 body.theme-light {
   @include mat.all-component-colors(themes.$light-theme);
   background-color: #f4f4f4 !important;
+
+  // Button
+  .primary-button {
+    @include mat.button-color(themes.$light-theme, $color-variant: primary);
+  }
+  .secondary-button {
+    @include mat.button-color(themes.$light-theme, $color-variant: secondary);
+  }
+  .tertiary-button {
+    @include mat.button-color(themes.$light-theme, $color-variant: tertiary);
+  }
+  .error-button {
+    @include mat.button-color(themes.$light-theme, $color-variant: error);
+  }
+
+  // Progress bar
+  .primary-progress-bar {
+    @include mat.progress-bar-color(
+      themes.$light-theme,
+      $color-variant: primary
+    );
+  }
+  .secondary-progress-bar {
+    @include mat.progress-bar-color(
+      themes.$light-theme,
+      $color-variant: secondary
+    );
+  }
+  .tertiary-progress-bar {
+    @include mat.progress-bar-color(
+      themes.$light-theme,
+      $color-variant: tertiary
+    );
+  }
+  .error-progress-bar {
+    @include mat.progress-bar-color(themes.$light-theme, $color-variant: error);
+  }
+}
+
+// Snackbar
+.success-snackbar {
+  --mdc-snackbar-container-color: #4caf50;
+  --mat-snack-bar-button-color: white;
+  --mdc-snackbar-supporting-text-color: white;
+}
+
+.success-snackbar button {
+  background-color: rgba($color: black, $alpha: 0.3);
+  color: black;
+}
+
+.error-snackbar {
+  --mdc-snackbar-container-color: #f44336;
+  --mat-snack-bar-button-color: white;
+  --mdc-snackbar-supporting-text-color: white;
+}
+
+.error-snackbar button {
+  background-color: rgba($color: black, $alpha: 0.3);
+  color: black;
 }

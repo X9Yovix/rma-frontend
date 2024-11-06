@@ -1,10 +1,93 @@
-import { Component } from "@angular/core";
+import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
+import {
+  MatPaginator,
+  MatPaginatorModule,
+  PageEvent,
+} from "@angular/material/paginator";
+import { MatTableDataSource, MatTableModule } from "@angular/material/table";
+import { RecipeInterface } from "../../core/interfaces/recipe/recipe-interface";
+import { RecipeService } from "../../core/services/recipe/recipe.service";
+import { DatePipe } from "@angular/common";
+import { MatIcon } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
+import { UtilsService } from "../../shared/utils/utils.service";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
 
 @Component({
   selector: "app-dashboard",
   standalone: true,
-  imports: [],
+  imports: [
+    MatTableModule,
+    MatPaginatorModule,
+    DatePipe,
+    MatButtonModule,
+    MatIcon,
+    MatProgressBarModule,
+  ],
   templateUrl: "./dashboard.component.html",
   styleUrl: "./dashboard.component.css",
 })
-export class DashboardComponent {}
+export class DashboardComponent implements AfterViewInit, OnInit {
+  isLoading: boolean = false;
+
+  displayedColumns: string[] = ["name", "description", "actions"];
+  recipesList: RecipeInterface[] = [];
+  dataSource = new MatTableDataSource<RecipeInterface>(this.recipesList);
+
+  pageSizes = [5, 10, 100];
+  totalRecipes = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  constructor(
+    private recipeService: RecipeService,
+    private utils: UtilsService
+  ) {}
+
+  ngOnInit() {
+    this.getRecipes();
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+  }
+
+  getRecipes(page: number = 1, pageSize: number = 5) {
+    try {
+      this.isLoading = true;
+      this.recipeService.getRecipes(page, pageSize).subscribe({
+        next: (response) => {
+          this.recipesList = response.recipes;
+          this.totalRecipes = response.totalRecipes;
+          this.dataSource = new MatTableDataSource<RecipeInterface>(
+            this.recipesList
+          );
+        },
+        error: (error) => {
+          console.error(error);
+          this.utils.openSnackBar(error.error.error, "error");
+        },
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  onPageChange(event: PageEvent) {
+    this.getRecipes(event.pageIndex + 1, event.pageSize);
+  }
+
+  onCreate() {
+    console.log("create recipe: ");
+  }
+
+  onModify(element: RecipeInterface) {
+    console.log("modify recipe: ", element);
+  }
+
+  onDelete(element: RecipeInterface) {
+    console.log("delete recipe: ", element);
+  }
+}

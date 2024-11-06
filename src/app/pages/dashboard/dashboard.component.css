@@ -1,0 +1,9 @@
+::ng-deep .mat-column-description {
+  max-width: 300px;
+}
+
+@media (max-width: 600px) {
+  ::ng-deep .mat-column-description {
+    max-width: 150px;
+  }
+}

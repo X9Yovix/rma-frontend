@@ -9,13 +9,23 @@ export class UtilsService {
 
   openSnackBar(
     message: string,
+    type?: string,
     action: string = "Close",
     config?: MatSnackBarConfig
   ) {
     const defaultConfig: MatSnackBarConfig = {
       duration: 2000,
       verticalPosition: "top",
+      panelClass: ["error-snackbar"],
     };
+
+    if (type === "success") {
+      defaultConfig.panelClass = ["success-snackbar"];
+    } else if (type === "error") {
+      defaultConfig.panelClass = ["error-snackbar"];
+    } else {
+      defaultConfig.panelClass = [];
+    }
 
     this.snackBar.open(message, action, { ...defaultConfig, ...config });
   }
